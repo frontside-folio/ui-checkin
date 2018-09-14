@@ -19,19 +19,17 @@ const provider = pact({
   const barcode =  "9676761472500";
   const loanId = "asdasdasdasd";
   const expectedLoanBody = {
-    items : ["blah","blah"],
+    id : "asdasdfasdf",
+    userid : "erqwerwe",
+    item : {
+      instanceid : "ryutyuityui"
+    }, 
+    systemReturnDate : "enter date here"
   }
 describeApplication( 'Pact Checkin', () => {
   const item;
     beforeEach(() => {
-      
-      this.server.create('item', 'withLoan', {
-        barcode: 9676761472500,
-        title: 'Best Book Ever',
-        materialType: {
-          name: 'book'
-        }
-      });
+    
         return provider.setup()
           .then(() => {
             provider.addInteraction({
@@ -55,15 +53,10 @@ describeApplication( 'Pact Checkin', () => {
       })
       
 
-    it('can retrieve the item by barcode from the provider by id', done => {
-
-       item = objectUnderTest.fetchItemByBarcode(barcode);
-      
-    } )
     it("can retrieve the loan by id", done => {
      const response =  objectUnderTest.fetchLoanById(loanId);
       
-      expect(response).to.eventually.have.property('items');
+      expect(response).to.eventually.have.property('');
     })
     after(() => {
       return provider.finalize()
