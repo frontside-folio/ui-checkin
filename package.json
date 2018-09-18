@@ -66,6 +66,7 @@
     "@folio/eslint-config-stripes": "^2.0.3",
     "@folio/stripes-cli": "^1.2.0",
     "@folio/stripes-core": "^2.10.2",
+    "@pact-foundation/karma-pact": "^2.1.8",
     "babel-core": "^6.17.0",
     "babel-polyfill": "^6.26.0",
     "chai": "^4.1.2",
@@ -83,6 +84,9 @@
   },
   "dependencies": {
     "@folio/stripes-components": "^3.0.0",
+    "@pact-foundation/pact": "^5.9.1",
+    "@pact-foundation/pact-node": "^6.19.11",
+    "@pact-foundation/pact-web": "^5.9.1",
     "dateformat": "^2.0.0",
     "lodash": "^4.17.4",
     "moment-timezone": "^0.5.14",
