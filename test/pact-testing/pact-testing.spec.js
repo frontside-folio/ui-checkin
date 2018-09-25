@@ -1,5 +1,4 @@
-
-const pact_testing = require("./pact-testing.js")
+const test = require("./pact-testing.js");
 import { beforeEach, describe, it } from '@bigtest/mocha';
 import { expect } from 'chai';
 
@@ -18,51 +17,73 @@ const expectedLoanBody = {
   }, 
   systemReturnDate : "enter date here"
 }
-describe( 'Pact Checkin', () => {
-  var provider; 
+describe( 'Pact Checkin tests', () => {
+  const provider = new Pact.PactWeb({
+      consumer: 'ui-checkin',
+      provider: 'mod-circulation', 
+      port : 9130
+    }); 
   
 
-  before(function (done) {
+
+
+ 
+//describe("base interaction" , () => {
+  before(function(done){
     console.log("before fired");
-    
-    provider = new Pact.PactWeb({
-      consumer: 'ui-checkin',
-      provider: 'mod-circulation'
-    })
+  
     // required for slower Travis CI environment
     setTimeout(function () {
+      console.log("before done");
       done()
     }, 1000)
-    console.log("provider interaction fired");
-    provider.addInteraction({
-         uponReceiving: 'a request for JSON data',
-         withRequest: {
-           method: 'GET',
-           path: '/circulation/loans',
-           query: {
-             query: "id==" + loanId
-           }
-         },
-         willRespondWith: {
-           status: 200,
-           headers: {
-             'Content-Type': 'application/json; charset=utf-8'
-           },
-           body: expectedLoanBody
-         }
+    
+    })
+  describe("first interaction", function() {
+    before(function() {
+      console.log("before add interaction fired");
+      return provider.addInteraction({
+        uponReceiving: 'a request for JSON data',
+        withRequest: {
+          method: 'GET',
+          path: '/circulation/loans'
+ 
+        },
+        willRespondWith: {
+          status: 200,
+          headers: {
+            'Content-Type': 'application/json; charset=utf-8'
+          },
+          body: expectedLoanBody
+        }
+      })
+      .catch(e => {
+         console.log('ERROR: ', e)
        })
+    })
+    it("can retrieve the loan by id", function(done) {
+      console.log("test started " );
+      // const response = test('/circulation/loans?', `id==${loanId}`)
+     
+      test('/circulation/loans', "").then((res) => {
+       response = res
+       console.log("request recieved");
+     }).then(() => {
+      expect(response).to.have.property('id');
+      console.log("test over");
+     }).then(done)
+
+    })
+  })
+  afterEach(() => {
+    console.log("verify called");
+    return provider.verify();
+    
   })
 
-    it("can retrieve the loan by id", done => {
-      console.log("test started " );
-      const response = pact_testing.test()
-      console.log("request recieved");
-      expect(response).to.eventually.have.property('');
-      console.log("test over");
-      provider.verify();
-    })
-    after(() => {
-      console.log("after triggered");
-      return provider.finalize()
-    })
+  after(() => {
+    console.log("after triggered");
+    return provider.finalize()
+  })
+
 })
