@@ -79,6 +79,7 @@ describe( 'Patron Pact tests', () => {
 describe("Fetch patron interaction", function() {
     before(function() {
       return provider.addInteraction({
+        given:'A patron exists',
         uponReceiving: 'a request for patron data',
         withRequest: {
           method: 'GET',

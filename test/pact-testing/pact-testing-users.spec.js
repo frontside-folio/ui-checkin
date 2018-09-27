@@ -3,7 +3,7 @@ import { beforeEach, describe, it } from '@bigtest/mocha';
 import { expect } from 'chai';
 const { somethingLike: like, term } = Pact.Matchers
 
-const UserId = "7261ecaae3a74dc68b468e12a70b1aec";
+const UserId = "5314b409-01d8-4146-860b-369af9ac2208";
 const expectedUserBody = 
 {
     username: like("jhandey"),
@@ -40,7 +40,8 @@ describe( 'User Pact tests', () => {
   describe("Fetch user interaction", function() {
       before(function() {
         return provider.addInteraction({
-          uponReceiving: 'a request for patron data',
+            given:'A user exists',
+          uponReceiving: 'a request for user data',
           withRequest: {
             method: 'GET',
             path: '/users/'+UserId,
@@ -58,7 +59,7 @@ describe( 'User Pact tests', () => {
            console.log('ERROR: ', e)
          })
       })
-      it("can retrieve the patron by id", function(done) {
+      it("can retrieve the user by id", function(done) {
         test('/users/', UserId).then((res) => {
          response = res
        }).then(() => {

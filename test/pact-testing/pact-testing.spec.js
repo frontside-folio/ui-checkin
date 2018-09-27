@@ -52,6 +52,7 @@ describe( 'Loan Pact tests', () => {
   describe("Fetch Loan interaction", function() {
     before(function() {
       return provider.addInteraction({
+        given:'A loan exists',
         uponReceiving: 'a request for Loan data',
         withRequest: {
           method: 'GET',
