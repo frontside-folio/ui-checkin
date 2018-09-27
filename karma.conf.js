@@ -31,12 +31,14 @@ module.exports = (config) => {
     files: [
       'node_modules/@pact-foundation/pact-web/pact-web.js',
       './test/pact-testing/pact-testing.js',
-      './test/pact-testing/pact-testing.spec.js',
+      //'./test/pact-testing/pact-testing.spec.js',
+      './test/pact-testing/pact-testing-users.spec.js'
       
     ],
     webpack: webpackConfig,
     preprocessors : {
-      './test/pact-testing/pact-testing.spec.js' : ['webpack'],
+      //'./test/pact-testing/pact-testing.spec.js' : ['webpack'],
+      './test/pact-testing/pact-testing-users.spec.js' : ['webpack'],
       './test/pact-testing/pact-testing.js' : ['webpack']
     },
     singleRun:true,

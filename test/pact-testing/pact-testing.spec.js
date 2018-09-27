@@ -1,53 +1,61 @@
 const test = require("./pact-testing.js");
 import { beforeEach, describe, it } from '@bigtest/mocha';
 import { expect } from 'chai';
-
-//import { describeApplication } from '../bigtest/helpers/describe-application';
-
-
-
+const { somethingLike: like, term } = Pact.Matchers
 
 const barcode =  "9676761472500";
-const loanId = "asdasdasdasd";
+
 const expectedLoanBody = {
-  id : "asdasdfasdf",
-  userid : "erqwerwe",
-  item : {
-    instanceid : "ryutyuityui"
-  }, 
-  systemReturnDate : "enter date here"
+loans: [
+  {
+    id: like("cf23adf0-61ba-4887-bf82-956c4aae2260"),
+    userId : like("df7f4993-8c14-4a0f-ab63-93975ab01c76"),
+    proxyUserId: like("346ad017-dac1-417d-9ed8-0ac7eeb886aa"),
+    itemId : like("cb20f34f-b773-462f-a091-b233cc96b9e6"),
+    item : {
+      title: like("The Long Way to a Small, Angry Planet"),
+      barcode: like("9676761472500"),
+      status : {
+        name: "Checked Out" //TODO put in options for this
+      }
+    },
+    loanDate: like("2017-03-01T22:34:11Z"),
+    dueDate: like("2017-04-01T22:34:11.000Z"),
+    status: {
+      name: "Open" //TODO put in options for this
+    },
+    location: {
+      name: like("Main Library")
+    },
+    action: "checkedout", //TODO put in options for this
+    renewalCount: like(1)
+  }
+],
+totalRecords: 1
 }
-describe( 'Pact Checkin tests', () => {
+  
+describe( 'Loan Pact tests', () => {
   const provider = new Pact.PactWeb({
       consumer: 'ui-checkin',
       provider: 'mod-circulation', 
       port : 9130
     }); 
-  
-
-
-
  
 //describe("base interaction" , () => {
   before(function(done){
-    console.log("before fired");
-  
     // required for slower Travis CI environment
     setTimeout(function () {
-      console.log("before done");
       done()
     }, 1000)
     
     })
-  describe("first interaction", function() {
+  describe("Fetch Loan interaction", function() {
     before(function() {
-      console.log("before add interaction fired");
       return provider.addInteraction({
-        uponReceiving: 'a request for JSON data',
+        uponReceiving: 'a request for Loan data',
         withRequest: {
           method: 'GET',
-          path: '/circulation/loans'
- 
+          path: '/circulation/loans/'+barcode,
         },
         willRespondWith: {
           status: 200,
@@ -62,28 +70,21 @@ describe( 'Pact Checkin tests', () => {
        })
     })
     it("can retrieve the loan by id", function(done) {
-      console.log("test started " );
-      // const response = test('/circulation/loans?', `id==${loanId}`)
-     
-      test('/circulation/loans', "").then((res) => {
-       response = res
-       console.log("request recieved");
+      test('/circulation/loans/', barcode).then((res) => {
+        response = res
      }).then(() => {
       expect(response).to.have.property('id');
-      console.log("test over");
      }).then(done)
-
     })
   })
+  
   afterEach(() => {
-    console.log("verify called");
     return provider.verify();
-    
   })
 
   after(() => {
-    console.log("after triggered");
-    return provider.finalize()
+    console.log("after triggered")
+    return provider.finalize() 
   })
 
 })
