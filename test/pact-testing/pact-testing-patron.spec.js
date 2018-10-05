@@ -1,4 +1,4 @@
-const test = require("./pact-testing.js");
+import {test} from './pact-testing';
 import { beforeEach, describe, it } from '@bigtest/mocha';
 import { expect } from 'chai';
 const { somethingLike: like, term } = Pact.Matchers

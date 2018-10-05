@@ -29,7 +29,7 @@ module.exports = (config) => {
       '@pact-foundation/karma-pact'
     ],
     files: [
-      'node_modules/@pact-foundation/pact-web/pact-web.js',
+      '../node_modules/@pact-foundation/pact-web/pact-web.js',
       './test/pact-testing/pact-testing.js',
       //'./test/pact-testing/pact-testing.spec.js',
       './test/pact-testing/pact-testing-users.spec.js'
