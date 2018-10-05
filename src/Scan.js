@@ -4,12 +4,15 @@ import PropTypes from 'prop-types';
 import dateFormat from 'dateformat';
 import { FormattedMessage } from 'react-intl';
 import moment from 'moment-timezone';
-import Button from '@folio/stripes-components/lib/Button';
-import DropdownMenu from '@folio/stripes-components/lib/DropdownMenu';
-import MenuItem from '@folio/stripes-components/lib/MenuItem';
+import {
+  Button,
+  DropdownMenu,
+  MenuItem,
+  UncontrolledDropdown,
+  InfoPopover
+} from '@folio/stripes/components';
+
 import { SubmissionError, change, reset } from 'redux-form';
-import { UncontrolledDropdown } from '@folio/stripes-components/lib/Dropdown';
-import InfoPopover from '@folio/stripes-components/lib/InfoPopover';
 import CheckIn from './CheckIn';
 
 class Scan extends React.Component {
@@ -37,13 +40,6 @@ class Scan extends React.Component {
       path: 'circulation/loans',
       fetch: false,
     },
-    holdings: {
-      type: 'okapi',
-      records: 'holdingsRecords',
-      path: 'holdings-storage/holdings',
-      accumulate: 'true',
-      fetch: false,
-    },
   });
 
   static propTypes = {
@@ -58,9 +54,6 @@ class Scan extends React.Component {
         records: PropTypes.arrayOf(PropTypes.object),
       }),
       items: PropTypes.shape({
-        records: PropTypes.arrayOf(PropTypes.object),
-      }),
-      holdings: PropTypes.shape({
         records: PropTypes.arrayOf(PropTypes.object),
       }),
       loans: PropTypes.shape({
@@ -83,10 +76,6 @@ class Scan extends React.Component {
       loans: PropTypes.shape({
         GET: PropTypes.func,
         PUT: PropTypes.func,
-        reset: PropTypes.func,
-      }),
-      holdings: PropTypes.shape({
-        GET: PropTypes.func,
         reset: PropTypes.func,
       }),
       scannedItems: PropTypes.shape({
@@ -228,7 +217,6 @@ class Scan extends React.Component {
       .then(loan => this.putReturn(loan, data.item.checkinDate, data.item.checkinTime))
       .then(loan => this.fetchLoanById(loan.id))
       .then(loan => this.fetchPatron(loan))
-      .then(loan => this.fetchHoldings(loan))
       .then(loan => this.addScannedItem(loan))
       .then(() => {
         this.clearField('CheckIn', 'item.barcode');
@@ -309,11 +297,6 @@ class Scan extends React.Component {
       }
       return Object.assign(loan, { patron: patrons[0] });
     });
-  }
-
-  fetchHoldings(loan) {
-    const query = `(id=="${loan.userId}")`;
-    return this.props.mutator.holdings.GET({ params: { query } }).then(holdings => Object.assign(loan, { holding: holdings[0] }));
   }
 
   addScannedItem(loan) {

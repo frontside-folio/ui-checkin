@@ -4,17 +4,20 @@ import PropTypes from 'prop-types';
 import { Field, reduxForm } from 'redux-form';
 import { FormattedMessage } from 'react-intl';
 import moment from 'moment-timezone';
-import Paneset from '@folio/stripes-components/lib/Paneset';
-import Pane from '@folio/stripes-components/lib/Pane';
-import Button from '@folio/stripes-components/lib/Button';
-import MultiColumnList from '@folio/stripes-components/lib/MultiColumnList';
-import TextField from '@folio/stripes-components/lib/TextField';
-import Datepicker from '@folio/stripes-components/lib/Datepicker';
-import Timepicker from '@folio/stripes-components/lib/Timepicker';
-import IconButton from '@folio/stripes-components/lib/IconButton';
-import Layout from '@folio/stripes-components/lib/Layout';
-import { Row, Col } from '@folio/stripes-components/lib/LayoutGrid';
-import Icon from '@folio/stripes-components/lib/Icon';
+import {
+  Paneset,
+  Pane,
+  Button,
+  MultiColumnList,
+  TextField,
+  Datepicker,
+  Timepicker,
+  IconButton,
+  Layout,
+  Row,
+  Col,
+  Icon
+} from '@folio/stripes/components';
 
 import styles from './checkin.css';
 
@@ -36,13 +39,13 @@ class CheckIn extends React.Component {
     this.barcodeEl = React.createRef();
   }
 
-  componentDidMount(){
-    setTimeout(() => this.focusInput());
-  }
-
   state = {
     showPickers: false
   };
+
+  componentDidMount() {
+    setTimeout(() => this.focusInput());
+  }
 
   focusInput() {
     if (this.barcodeEl.current) {
@@ -173,6 +176,7 @@ class CheckIn extends React.Component {
                           data-test-checkin-modify-date
                           onClick={this.showPickers}
                           className={styles['modify-datetime-button']}
+                          type="button"
                         >
                           <Icon icon="edit" iconPosition="end">
                             <FormattedMessage id="ui-checkin.today" />
@@ -199,6 +203,7 @@ class CheckIn extends React.Component {
                           data-test-checkin-modify-time
                           onClick={this.showPickers}
                           className={styles['modify-datetime-button']}
+                          type="button"
                         >
                           <Icon icon="edit" iconPosition="end">
                             <FormattedMessage id="ui-checkin.now" />
