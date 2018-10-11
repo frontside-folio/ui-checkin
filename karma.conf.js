@@ -18,9 +18,7 @@ webpackConfig.plugins.push(new webpack.EnvironmentPlugin({
   NODE_ENV: 'test',
 }));
 module.exports = (config) => {
-  const testIndex = './test/pact-testing/pact-testing.spec.js';
-  const preprocessors = {};
-  preprocessors[`${testIndex}`] = ['webpack','babel'];
+
 
   const configuration = {
     frameworks:['mocha', 'pact'],
@@ -30,18 +28,19 @@ module.exports = (config) => {
     ],
     files: [
       '../node_modules/@pact-foundation/pact-web/pact-web.js',
-      './test/pact-testing/pact-testing.js',
-      //'./test/pact-testing/pact-testing.spec.js',
-      './test/pact-testing/pact-testing-users.spec.js'
+      '../node_modules/babel-polyfill/dist/polyfill.js',
+      //'./test/pact-testing/pact-testing.js',
+      './test/pact-testing/pact-testing.spec.js',
+      //'./test/pact-testing/pact-testing-users.spec.js'
       
     ],
     webpack: webpackConfig,
     preprocessors : {
-      //'./test/pact-testing/pact-testing.spec.js' : ['webpack'],
-      './test/pact-testing/pact-testing-users.spec.js' : ['webpack'],
-      './test/pact-testing/pact-testing.js' : ['webpack']
+      './test/pact-testing/pact-testing.spec.js' : ['webpack'],
+      //'./test/pact-testing/pact-testing-users.spec.js' : ['webpack'],
+      //'./test/pact-testing/pact-testing.js' : ['webpack']
     },
-    singleRun:true,
+    singleRun:false,
     pact:[{
       consumer: 'ui-checkin',
       provider: 'mod-circulation',

@@ -1,55 +1,43 @@
-import {test} from './pact-testing';
+
 import { beforeEach, describe, it } from '@bigtest/mocha';
 import { expect } from 'chai';
-const { somethingLike: like, term } = Pact.Matchers
+import * as exampleRespnses from './expectedResponses';
+import setupApplication from '../bigtest/helpers/setup-application';
+import CheckInInteractor from '../bigtest/interactors/check-in';
 
 const barcode =  "9676761472500";
 
-const expectedLoanBody = {
-loans: [
-  {
-    id: like("cf23adf0-61ba-4887-bf82-956c4aae2260"),
-    userId : like("df7f4993-8c14-4a0f-ab63-93975ab01c76"),
-    proxyUserId: like("346ad017-dac1-417d-9ed8-0ac7eeb886aa"),
-    itemId : like("cb20f34f-b773-462f-a091-b233cc96b9e6"),
-    item : {
-      title: like("The Long Way to a Small, Angry Planet"),
-      barcode: like("9676761472500"),
-      status : {
-        name: "Checked Out" //TODO put in options for this
-      }
-    },
-    loanDate: like("2017-03-01T22:34:11Z"),
-    dueDate: like("2017-04-01T22:34:11.000Z"),
-    status: {
-      name: "Open" //TODO put in options for this
-    },
-    location: {
-      name: like("Main Library")
-    },
-    action: "checkedout", //TODO put in options for this
-    renewalCount: like(1)
-  }
-],
-totalRecords: 1
-}
-  
-describe( 'Loan Pact tests', () => {
-  const provider = new Pact.PactWeb({
+describe( 'checkin pact tests', () => {
+
+  setupApplication();
+
+  const checkIn = new CheckInInteractor();
+  var provider;
+  before(function(done) {
+     provider = new Pact.PactWeb({
       consumer: 'ui-checkin',
       provider: 'mod-circulation', 
       port : 9130
-    }); 
- 
-//describe("base interaction" , () => {
-  before(function(done){
+    })
     // required for slower Travis CI environment
     setTimeout(function () {
       done()
     }, 1000)
-    
-    })
-  describe("Fetch Loan interaction", function() {
+  });
+ beforeEach(function () {
+    this.server.createList('item', 5, 'withLoan');
+    return this.visit('/checkin', () => {
+      console.log("visit finished")
+      expect(checkIn.$root).to.exist;
+    });
+  });
+  console.log("checking barcode")
+  it('has a barcode field', () => {
+    expect(checkIn.barcodePresent).to.be.true;
+  });
+
+
+  describe('entering a barcode', () => {
     before(function() {
       return provider.addInteraction({
         given:'A loan exists',
@@ -63,19 +51,39 @@ describe( 'Loan Pact tests', () => {
           headers: {
             'Content-Type': 'application/json; charset=utf-8'
           },
-          body: expectedLoanBody
+          body: exampleRespnses.expectedLoanBody
         }
       })
       .catch(e => {
          console.log('ERROR: ', e)
-       })
-    })
-    it("can retrieve the loan by id", function(done) {
-      test('/circulation/loans/', barcode).then((res) => {
-        response = res
-     }).then(() => {
-      expect(response).to.have.property('id');
-     }).then(done)
+      })
+  
+    
+      beforeEach(function () {
+        this.server.create('item', 'withLoan', {
+          barcode: 9676761472500,
+          title: 'Best Book Ever',
+          materialType: {
+            name: 'book'
+          }
+        });
+  
+        return checkIn.barcode('9676761472500').clickEnter();
+      });
+  
+      it('displays the checked-in item', () => {
+        expect(checkIn.checkedInBookTitle).to.equal('Best Book Ever (book)');
+      });
+  
+      describe('ending the session', () => {
+        beforeEach(() => {
+          return checkIn.endSession();
+        });
+  
+        it('clears the list', () => {
+          expect(checkIn.hasCheckedInItems).to.be.false;
+        });
+      });
     })
   })
   

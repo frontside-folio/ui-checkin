@@ -2,6 +2,9 @@ import CQLParser, { CQLBoolean } from './cql';
 
 // typical mirage config export
 export default function configure() {
+  this.passthrough('http://127.0.0.1:9130/interactions/verification');
+  this.passthrough('http://127.0.0.1:9130/pact');
+  this.passthrough('http://127.0.0.1:9130/interactions');
   // users
   this.get('/users', ({ users }, request) => {
     if (request.queryParams.query) {
@@ -56,4 +59,5 @@ export default function configure() {
     holdingsRecords: [],
     totalRecords: 0
   });
+  
 }

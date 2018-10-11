@@ -1,3 +1,4 @@
+const { somethingLike: like, term } = Pact.Matchers
 export const expectedLoanBody = {
     loans: [
       {
