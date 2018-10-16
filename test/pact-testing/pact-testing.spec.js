@@ -7,7 +7,7 @@ import CheckInInteractor from '../bigtest/interactors/check-in';
 
 const barcode =  "9676761472500";
 
-describe( 'checkin pact tests', () => {
+describe( 'checkin ', () => {
 
   setupApplication();
 
@@ -16,19 +16,20 @@ describe( 'checkin pact tests', () => {
   before(function(done) {
      provider = new Pact.PactWeb({
       consumer: 'ui-checkin',
-      provider: 'mod-circulation', 
+      provider: 'mod-users', 
       port : 9130
     })
     // required for slower Travis CI environment
     setTimeout(function () {
       done()
     }, 1000)
+    
   });
- beforeEach(function () {
+  beforeEach(function () {
     this.server.createList('item', 5, 'withLoan');
-    return this.visit('/checkin', () => {
-      console.log("visit finished")
-      expect(checkIn.$root).to.exist;
+      return this.visit('/checkin', () => {
+        console.log("visit finished")
+        expect(checkIn.$root).to.exist;
     });
   });
   console.log("checking barcode")
@@ -36,29 +37,57 @@ describe( 'checkin pact tests', () => {
     expect(checkIn.barcodePresent).to.be.true;
   });
 
-
-  describe('entering a barcode', () => {
-    before(function() {
-      return provider.addInteraction({
-        given:'A loan exists',
-        uponReceiving: 'a request for Loan data',
-        withRequest: {
-          method: 'GET',
-          path: '/circulation/loans/'+barcode,
-        },
-        willRespondWith: {
-          status: 200,
-          headers: {
-            'Content-Type': 'application/json; charset=utf-8'
+    describe('entering an invalid barcode', () => {
+      before(function() {
+        return provider.addInteraction({
+          given:'A loan exists',
+          uponReceiving: 'a request for Loan data',
+          withRequest: {
+            method: 'GET',
+            path: '/circulation/loans/'+barcode,
           },
-          body: exampleRespnses.expectedLoanBody
-        }
-      })
-      .catch(e => {
-         console.log('ERROR: ', e)
-      })
+          willRespondWith: {
+            status: 200,
+            headers: {
+              'Content-Type': 'application/json; charset=utf-8'
+            },
+            body: exampleRespnses.expectedLoanBody
+          }
+        })
+        .catch(e => {
+           console.log('ERROR: ', e)
+        })
+      });
+      beforeEach(() => {
+        return checkIn.barcode('0000000').clickEnter();
+      });
   
-    
+      it('shows an error', () => {
+        expect(checkIn.barcodeError).to.equal('Item with this barcode does not exist');
+      });
+    });
+  
+    describe('entering a barcode', () => {
+      before(function() {
+        return provider.addInteraction({
+          given:'A loan exists',
+          uponReceiving: 'a request for Loan data',
+          withRequest: {
+            method: 'GET',
+            path: '/circulation/loans/'+barcode,
+          },
+          willRespondWith: {
+            status: 200,
+            headers: {
+              'Content-Type': 'application/json; charset=utf-8'
+            },
+            body: exampleRespnses.expectedLoanBody
+          }
+        })
+        .catch(e => {
+           console.log('ERROR: ', e)
+        })
+      });
       beforeEach(function () {
         this.server.create('item', 'withLoan', {
           barcode: 9676761472500,
@@ -84,8 +113,121 @@ describe( 'checkin pact tests', () => {
           expect(checkIn.hasCheckedInItems).to.be.false;
         });
       });
-    })
-  })
+    });
+  
+    describe('submitting the check-in without a barcode', () => {
+      beforeEach(async function () {
+        this.server.create('item', 'withLoan', {
+          barcode: 9676761472500,
+          title: 'Best Book Ever',
+          materialType: {
+            name: 'book'
+          }
+        });
+  
+        await checkIn.clickChangeDate();
+        await checkIn.processDate.fillAndBlur('04/25/2018');
+        await checkIn.processTime.fillInput('4:25 PM').clickEnter();
+      });
+  
+      it('throws the fillOut error', () => {
+        expect(checkIn.fillOutError).to.equal('Please fill this out to continue');
+      });
+    });
+  
+    describe('changing check-in date and time', () => {
+      let body;
+      beforeEach(async function () {
+        this.server.put('/circulation/loans/:id', (_, request) => {
+          body = JSON.parse(request.requestBody);
+          return body;
+        });
+  
+        this.server.create('item', 'withLoan', {
+          barcode: 9676761472500,
+          title: 'Best Book Ever',
+          materialType: {
+            name: 'book'
+          }
+        });
+  
+        await checkIn.clickChangeTime();
+        await checkIn.processDate.fillAndBlur('04/25/2018');
+        await checkIn.processTime.fillInput('4:25 PM');
+        await checkIn.barcode('9676761472500').clickEnter();
+      });
+  
+      it('changes the date and time in the payload', () => {
+        expect(body.systemReturnDate).to.include('2018-04-25');
+        expect(body.systemReturnDate).to.include('16:25:00');
+      });
+    });
+  
+    describe('navigating to loan details', () => {
+      beforeEach(async function () {
+        this.server.create('item', 'withLoan', {
+          barcode: 9676761472500,
+          title: 'Best Book Ever',
+          materialType: {
+            name: 'book'
+          }
+        });
+  
+        await checkIn.barcode('9676761472500').clickEnter();
+        await checkIn.selectElipse();
+        await checkIn.selectLoanDetails();
+      });
+  
+      it('directs to loan details page', function () {
+        const { search, pathname } = this.location;
+        expect(pathname + search).to.include('/users/view/6?layer=loan&loan=6');
+      });
+    });
+  
+    describe('navigating to patron details', () => {
+      beforeEach(async function () {
+        this.server.create('item', 'withLoan', {
+          barcode: 9676761472500,
+          title: 'Best Book Ever',
+          materialType: {
+            name: 'book'
+          }
+        });
+  
+        await checkIn.barcode('9676761472500').clickEnter();
+        await checkIn.selectElipse();
+        await checkIn.selectPatronDetails();
+      });
+  
+      it('directs to patron details page', function () {
+        const { search, pathname } = this.location;
+        expect(pathname + search).to.include('/users/view/6');
+      });
+    });
+  
+    describe('navigating to item details', () => {
+      beforeEach(async function () {
+        this.server.create('item', 'withLoan', {
+          barcode: 9676761472500,
+          title: 'Best Book Ever',
+          materialType: {
+            name: 'book'
+          },
+          instanceId : 'lychee',
+          holdingsRecordId : 'apple'
+        });
+  
+        await checkIn.barcode('9676761472500').clickEnter();
+        await checkIn.selectElipse();
+        await checkIn.selectItemDetails();
+      });
+  
+      it('directs to item details page', function () {
+        const { search, pathname } = this.location;
+        expect(pathname + search).to.include('/inventory/view/lychee/apple/6');
+      });
+    });
+  
   
   afterEach(() => {
     return provider.verify();

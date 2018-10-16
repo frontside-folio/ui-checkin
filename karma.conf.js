@@ -6,13 +6,6 @@ const webpack = require('webpack');
 // karma-webpack to load properly.
 const webpackConfig = require('@folio/stripes-core/webpack.config.cli.dev');
 
-// This is not a separate platform, so we need to stub out our own
-// stripes config. Whenever code in the application, or in stripes
-// itself does `import 'stripes-config'`, it will find our test
-// config.
-//
-webpackConfig.resolve.alias['stripes-config'] = path.resolve(__dirname, './stripes.config.js');
-
 // make sure that the NODE_ENV is available in browser code.
 webpackConfig.plugins.push(new webpack.EnvironmentPlugin({
   NODE_ENV: 'test',
