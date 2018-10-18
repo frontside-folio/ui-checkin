@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
-
+const pactwebPath = require.resolve('@pact-foundation/pact-web/pact-web.js')
+const polyfillPath = require.resolve('babel-polyfill/dist/polyfill.js')
 // Start with the base stripes webpack config.
 // we'll need to make some changes in order to get
 // karma-webpack to load properly.
@@ -20,8 +21,8 @@ module.exports = (config) => {
       '@pact-foundation/karma-pact'
     ],
     files: [
-      '../node_modules/@pact-foundation/pact-web/pact-web.js',
-      '../node_modules/babel-polyfill/dist/polyfill.js',
+      pactwebPath,
+      polyfillPath,
       //'./test/pact-testing/pact-testing.js',
       './test/pact-testing/pact-testing.spec.js',
       //'./test/pact-testing/pact-testing-users.spec.js'
@@ -36,7 +37,7 @@ module.exports = (config) => {
     singleRun:false,
     pact:[{
       consumer: 'ui-checkin',
-      provider: 'mod-circulation',
+      provider: 'mod-users',
       port: 9130,
       log: path.resolve(process.cwd(), 'logs', 'pact.log'),
       dir: path.resolve(process.cwd(), 'pacts'),

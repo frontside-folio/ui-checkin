@@ -1,11 +1,11 @@
-const { somethingLike: like, term } = Pact.Matchers
+const { somethingLike: like, uuid, boolean } = Pact.Matchers
 export const expectedLoanBody = {
     loans: [
       {
-        id: like("cf23adf0-61ba-4887-bf82-956c4aae2260"),
-        userId : like("df7f4993-8c14-4a0f-ab63-93975ab01c76"),
-        proxyUserId: like("346ad017-dac1-417d-9ed8-0ac7eeb886aa"),
-        itemId : like("cb20f34f-b773-462f-a091-b233cc96b9e6"),
+        id: uuid("cf23adf0-61ba-4887-bf82-956c4aae2260"),
+        userId : uuid("df7f4993-8c14-4a0f-ab63-93975ab01c76"),
+        proxyUserId: uuid("346ad017-dac1-417d-9ed8-0ac7eeb886aa"),
+        itemId : uuid("cb20f34f-b773-462f-a091-b233cc96b9e6"),
         item : {
           title: like("The Long Way to a Small, Angry Planet"),
           barcode: like("9676761472500"),
@@ -88,10 +88,10 @@ export const expectedUserBody =
   users : [
     {
     username: like("jhandey"),
-    id: like("5314b409-01d8-4146-860b-369af9ac2208"),
-    active: like(true),
+    id: uuid("5314b409-01d8-4146-860b-369af9ac2208"),
+    active: boolean(true),
     type: like("patron"),
-    patronGroup: like("4bb563d9-3f9d-4e1e-8d1d-04e75666d68f"),
+    patronGroup: uuid("4bb563d9-3f9d-4e1e-8d1d-04e75666d68f"),
     meta: {
       creation_date: like("2016-11-05T0723"),
       last_login_date: like("")

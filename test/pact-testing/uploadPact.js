@@ -6,7 +6,7 @@ const path = require('path');
         pactBroker: "https://ebsco.pact.dius.com.au/",
         pactBrokerUsername : process.env.pactBrokerUsername,
         pactBrokerPassword : process.env.pactBrokerPassword,
-        consumerVersion: '0.1',
+        consumerVersion: '0.3',
         tags: ['latest'], 
         verbose: false
      };
