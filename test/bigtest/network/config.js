@@ -1,23 +1,22 @@
 import CQLParser, { CQLBoolean } from './cql';
-
 // typical mirage config export
 export default function configure() {
   this.passthrough('http://127.0.0.1:9130/interactions/verification');
   this.passthrough('http://127.0.0.1:9130/pact');
   this.passthrough('http://127.0.0.1:9130/interactions');
-  // users
-  this.get('/users', ({ users }, request) => {
-    if (request.queryParams.query) {
-      const cqlParser = new CQLParser();
-      cqlParser.parse(request.queryParams.query);
-      return users.where({
-        id: cqlParser.tree.term
-      });
-    } else {
-      return [];
-    }
-  });
-
+  this.passthrough('/users')
+   // users
+  // this.get('/users', ({ users }, request) => {
+  //   if (request.queryParams.query) {
+  //     const cqlParser = new CQLParser();
+  //     cqlParser.parse(request.queryParams.query);
+  //     return users.where({
+  //       id: cqlParser.tree.term
+  //     });
+  //   } else {
+  //     return [];
+  //   }
+  // });
   // item-storage
   this.get('/service-points', {});
 

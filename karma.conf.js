@@ -40,10 +40,18 @@ module.exports = (config) => {
       port: 9130,
       log: path.resolve(process.cwd(), 'logs', 'pact.log'),
       dir: path.resolve(process.cwd(), 'pacts'),
-      logLevel: 'DEBUG',
+      logLevel: 'INFO',
       spec: 3, 
       cors:true
-    }]
+    }], 
+    /*browsers: ['Chrome_without_security'],
+    customLaunchers: {
+      Chrome_without_security: {
+        base: 'Chrome',
+        flags: ['--disable-web-security']
+      }
+      
+    }*/
   };
 
   config.set(configuration);

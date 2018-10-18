@@ -85,8 +85,10 @@ export const expectedPatronBody =
 }
 export const expectedUserBody = 
 {
+  users : [
+    {
     username: like("jhandey"),
-    id: like("7261ecaae3a74dc68b468e12a70b1aec"),
+    id: like("5314b409-01d8-4146-860b-369af9ac2208"),
     active: like(true),
     type: like("patron"),
     patronGroup: like("4bb563d9-3f9d-4e1e-8d1d-04e75666d68f"),
@@ -100,4 +102,6 @@ export const expectedUserBody =
       email: like("jhandey@biglibrary.org"),
       phone: like("2125551212")
     }
+  }
+  ]
   };
