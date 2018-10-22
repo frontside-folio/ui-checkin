@@ -87,21 +87,7 @@ export const expectedUserBody =
 {
   users : [
     {
-    username: like("jhandey"),
-    id: uuid("5314b409-01d8-4146-860b-369af9ac2208"),
-    active: boolean(true),
-    type: like("patron"),
-    patronGroup: uuid("4bb563d9-3f9d-4e1e-8d1d-04e75666d68f"),
-    meta: {
-      creation_date: like("2016-11-05T0723"),
-      last_login_date: like("")
-    },
-    personal: {
-      lastName: like("Handey"),
-      firstName: like("Jack"),
-      email: like("jhandey@biglibrary.org"),
-      phone: like("2125551212")
+      id: uuid("5314b409-01d8-4146-860b-369af9ac2208"),
     }
-  }
   ]
   };

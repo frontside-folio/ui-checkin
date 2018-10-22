@@ -54,13 +54,15 @@ describe( 'checkin ', () => {
           withRequest: {
             method: 'GET',
             path: masterPath,
-            query : queryObj
+            query : queryObj, 
+            headers : {'X-Okapi-Tenant' : 'diku', 'Accept': 'application/json'}
 
           },
           willRespondWith: {
             status: 200,
             headers: {
-              'Content-Type': 'application/json; charset=utf-8'
+              'Content-Type': 'application/json', 
+              
           },
           body: exampleResponses.expectedUserBody
         }
