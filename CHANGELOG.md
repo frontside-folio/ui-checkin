@@ -1,5 +1,9 @@
 # Change history for ui-checkin
 
+## 1.10.0 (IN PROGRESS)
+
+* Upgrade react-router-dom to v5 and move it to peerDependencies (STCOM-581)
+
 ## [1.9.0](https://github.com/folio-org/ui-checkin/tree/v1.9.0) (2019-09-11)
 [Full Changelog](https://github.com/folio-org/ui-checkin/compare/v1.8.0...v1.9.0)
 
