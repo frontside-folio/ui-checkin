@@ -4,10 +4,8 @@ import {
   it,
 } from '@bigtest/mocha';
 import { expect } from 'chai';
-import {
-  Response,
-  faker,
-} from '@bigtest/mirage';
+import { Response } from '@bigtest/mirage';
+import faker from 'faker';
 
 import setupApplication from '../helpers/setup-application';
 import CheckInInteractor from '../interactors/check-in';
