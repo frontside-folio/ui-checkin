@@ -52,7 +52,7 @@ describe('CheckIn', () => {
       await checkIn.barcode('000000000').clickEnter();
     });
 
-    it('shows an error', () => {
+    it.only('shows an error', () => {
       expect(checkIn.errorModal).to.be.true;
       expect(checkIn.barcodeError).to.equal('The barcode 000000000 could not be found.');
     });

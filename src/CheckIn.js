@@ -498,7 +498,8 @@ class CheckIn extends React.Component {
                         component={TextField}
                         data-test-check-in-barcode
                       />
-                      {hasSubmitErrors && <span className={styles.error}>{submitErrors.checkin}</span>}
+                      {/* {hasSubmitErrors && <span className={styles.error}>{submitErrors.checkin}</span>} */}
+                      {hasSubmitErrors && <IsolateThis submitErrors={submitErrors} />}
                     </Layout>
                   </Col>
                   <Col xs={3} sm={1}>
@@ -603,3 +604,8 @@ class CheckIn extends React.Component {
 export default stripesFinalForm({
   navigationCheck: true,
 })(injectIntl(CheckIn));
+
+function IsolateThis(props) {
+  console.log(props);
+  return null;
+}
