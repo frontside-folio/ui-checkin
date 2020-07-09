@@ -4,7 +4,8 @@ import {
   it,
 } from '@bigtest/mocha';
 import { expect } from 'chai';
-import { Response } from '@bigtest/mirage';
+// import { Response } from '@bigtest/mirage';
+import { Response } from 'miragejs';
 import faker from 'faker';
 
 import setupApplication from '../helpers/setup-application';
