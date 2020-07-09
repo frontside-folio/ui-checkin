@@ -1,4 +1,4 @@
-import { RestSerializer } from '@bigtest/mirage';
+import { RestSerializer } from 'miragejs';
 // import { RestSerializer as MirageRestSerializer } from 'miragejs';
 // import { camelize, singularize, pluralize, underscore } from 'inflected';
 

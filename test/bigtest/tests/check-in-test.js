@@ -4,7 +4,6 @@ import {
   it,
 } from '@bigtest/mocha';
 import { expect } from 'chai';
-// import { Response } from '@bigtest/mirage';
 import { Response } from 'miragejs';
 import faker from 'faker';
 
@@ -52,7 +51,7 @@ describe('CheckIn', () => {
       await checkIn.barcode('000000000').clickEnter();
     });
 
-    it.only('shows an error', () => {
+    it('shows an error', () => {
       expect(checkIn.errorModal).to.be.true;
       expect(checkIn.barcodeError).to.equal('The barcode 000000000 could not be found.');
     });
